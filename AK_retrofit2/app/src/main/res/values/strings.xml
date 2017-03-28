@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AK_retrofit2</string>
+    <string name="load_repositories">Load Repositories</string>
+    <string name="load_user_data">Load User Data</string>
+</resources>
