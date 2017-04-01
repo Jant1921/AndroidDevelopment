@@ -4,25 +4,92 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.akurey.jruiz.ak_retrofit2.MainActivity">
+    tools:context="com.akurey.jruiz.ak_retrofit2.MainActivity"
+    >
 
-    <Button
-        android:id="@+id/loadRepositories"
+    <LinearLayout
+        android:id="@+id/layout_inputs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/load_repositories"
-        android:gravity="center"
-        android:onClick="onClick"
-        />
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+
+        <LinearLayout
+            android:id="@+id/user_name_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:id="@+id/label_user_nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/user_nickname"
+                android:textSize="18sp"
+                android:textColor="#000"
+                />
+
+            <EditText
+                android:id="@+id/input_user_nickname"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:ems="10"
+                android:layout_marginLeft="10dp"
+                android:inputType="textPersonName"
+                android:hint="@string/type_the_user_nickname" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:id="@+id/label_user_email"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="User name:"
+                android:textSize="18sp"
+                android:textColor="#000"
+                />
+
+            <TextView
+                android:id="@+id/label_loaded_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Waiting for user name"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:textAlignment="viewStart" />
+
+        </LinearLayout>
+    </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView_repos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_inputs"
+        android:layout_above="@+id/loadUserData">
+
+    </android.support.v7.widget.RecyclerView>
+
     <Button
         android:id="@+id/loadUserData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/loadRepositories"
         android:text="@string/load_user_data"
         android:gravity="center"
         android:onClick="onClick"
-        />
+        android:layout_alignParentBottom="true" />
+
+
 
 </RelativeLayout>

@@ -2,12 +2,17 @@ package com.akurey.jruiz.ak_retrofit2;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -16,12 +21,27 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements Callback<GithubUser> {
+public class MainActivity extends AppCompatActivity {
+    EditText userNickname;
+    TextView loadedName;
+    private RecyclerView mRecyclerView;
+    private ReposAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("Github Repos Example");
+        userNickname = (EditText) findViewById(R.id.input_user_nickname);
+        loadedName = (TextView) findViewById(R.id.label_loaded_name);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView_repos);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),1));
+
+        mAdapter = new ReposAdapter(getApplicationContext());
+
+        mRecyclerView.setAdapter(mAdapter);
+
     }
 
     private void showToast(String pMessage){
@@ -29,7 +49,26 @@ public class MainActivity extends AppCompatActivity implements Callback<GithubUs
                 .show();
     }
 
-    Callback repos = new Callback<List<GithubRepo>>(){
+    Callback userCallback = new  Callback<GithubUser>() {
+        @Override
+        public void onResponse(Call<GithubUser> call, Response<GithubUser> response) {
+            int code = response.code();
+            if(code == 200){
+                GithubUser user = response.body();
+                loadedName.setText(user.name);
+
+            }else{
+                showToast("Did not work: " + String.valueOf(code));
+            }
+        }
+
+        @Override
+        public void onFailure(Call<GithubUser> call, Throwable t) {
+            showToast("Nope. "+t.getMessage());
+        }
+    };
+
+    Callback repoCallback = new Callback<List<GithubRepo>>(){
 
         @Override
         public void onResponse(Call<List<GithubRepo>> call, Response<List<GithubRepo>> response) {
@@ -39,9 +78,12 @@ public class MainActivity extends AppCompatActivity implements Callback<GithubUs
                 for(GithubRepo repo: repos){
                     builder.append(repo.name + " " + repo.toString());
                 }
-                showToast(builder.toString());
+                //showToast(builder.toString());
+                mAdapter.setRepoList(repos);
             }else{
                 showToast("Error Code: "+response.message());
+                loadedName.setText(response.message());
+
             }
         }
 
@@ -61,35 +103,24 @@ public class MainActivity extends AppCompatActivity implements Callback<GithubUs
                 .build();
         GithubAPI githubUserAPI = retrofit.create(GithubAPI.class);
 
-        switch(view.getId()){
-            case R.id.loadUserData:
-                // prepare call in Retrofit2
-                Call<GithubUser> callUser = githubUserAPI.getUser("vogella");
-                //asynchronous call
-                callUser.enqueue(this);
-                break;
-            case R.id.loadRepositories:
-                Call<List<GithubRepo>> callRepos = githubUserAPI.getRepos("vogella");
-                //asynchronous call
-                callRepos.enqueue(repos);
-                break;
-            //no-default
-        }
+        /*
+        case R.id.loadUserData:
+            // prepare call in Retrofit2
+
+            break;
+            */
+            Call<GithubUser> callUser = githubUserAPI.getUser(userNickname.getText().toString());
+            Call<List<GithubRepo>> callRepos = githubUserAPI.getRepos(userNickname.getText().toString());
+
+            //asynchronous call
+            callUser.enqueue(userCallback);
+            callRepos.enqueue(repoCallback);
+            loadedName.setText(R.string.loading_text);
+            mAdapter.setRepoList(new ArrayList<GithubRepo>());
+
+        //no-default
+
     }
 
-    @Override
-    public void onResponse(Call<GithubUser> call, Response<GithubUser> response) {
-        int code = response.code();
-        if(code == 200){
-            GithubUser user = response.body();
-            showToast("Got the user: " + user.email);
-        }else{
-            showToast("Did not work: " + String.valueOf(code));
-        }
-    }
 
-    @Override
-    public void onFailure(Call<GithubUser> call, Throwable t) {
-        showToast("Nope. "+t.getMessage());
-    }
 }
