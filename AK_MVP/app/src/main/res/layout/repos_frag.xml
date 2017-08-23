@@ -29,7 +29,7 @@
 
             <EditText
                 android:id="@+id/input_user_nickname"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:ems="10"
@@ -72,12 +72,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_inputs"
-        android:layout_above="@+id/loadUserData">
+        android:layout_above="@+id/btn_loadUserData">
 
     </android.support.v7.widget.RecyclerView>
 
-    android:text="@string/load_user_data"
-    android:gravity="center"
     <Button
         android:id="@+id/btn_loadUserData"
         android:layout_width="match_parent"
